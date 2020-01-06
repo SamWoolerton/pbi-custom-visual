@@ -1,14 +1,11 @@
 "use strict"
 
+import powerbi from "powerbi-visuals-api"
 import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions
 import IVisual = powerbi.extensibility.visual.IVisual
-import EnumerateVisualObjectInstancesOptions = powerbi.EnumerateVisualObjectInstancesOptions
-import VisualObjectInstance = powerbi.VisualObjectInstance
-import VisualObjectInstanceEnumerationObject = powerbi.VisualObjectInstanceEnumerationObject
 
 import "core-js/stable"
 import "./../style/visual.less"
-import powerbi from "powerbi-visuals-api"
 import { VisualSettings } from "./settings"
 import { render } from "./render"
 
@@ -24,7 +21,6 @@ export class Visual implements IVisual {
 
   public update(options: VisualUpdateOptions) {
     this.settings = VisualSettings.parse(options.dataViews[0])
-    setConfig(this.host, "basic testing")
 
     if (!options.dataViews[0].metadata.objects) {
       return (this.root.innerHTML = `<div>
