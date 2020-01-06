@@ -5,7 +5,6 @@ import DataViewObjectsParser = dataViewObjectsParser.DataViewObjectsParser
 
 export class VisualSettings extends DataViewObjectsParser {
   public dataPoint: dataPointSettings = new dataPointSettings()
-  public config: configSettings = new configSettings()
 }
 
 class dataPointSettings {
@@ -15,8 +14,4 @@ class dataPointSettings {
   // Color saturation
   public fillRule: string = ""
   public fontSize: number = 12
-}
-
-class configSettings {
-  public configJson: string = ""
 }

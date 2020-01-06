@@ -26,6 +26,8 @@ export class Visual implements IVisual {
     console.log("Settings are", this.settings)
     console.log("Options are", options.dataViews[0])
 
+    persistConfig(this.host, "basic testing")
+
     if (!options.dataViews[0].metadata.objects) {
       return (this.root.innerHTML = `<div>
         <p>No config loaded</p>
@@ -36,8 +38,6 @@ export class Visual implements IVisual {
 
     console.log("Visual update", options)
     console.log("Host is", this.host)
-
-    persistConfig(this.host, "basic testing")
 
     console.log(
       "After persisting properties",
