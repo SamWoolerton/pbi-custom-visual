@@ -7,7 +7,7 @@ import IVisual = powerbi.extensibility.visual.IVisual
 import "core-js/stable"
 import "./../style/visual.less"
 import { VisualSettings } from "./settings"
-import { render } from "./render"
+import { renderChart, renderConfig } from "./render"
 
 export class Visual implements IVisual {
   private root: HTMLElement
@@ -21,19 +21,31 @@ export class Visual implements IVisual {
 
   public update(options: VisualUpdateOptions) {
     this.settings = VisualSettings.parse(options.dataViews[0])
+    const updateConfig = config => setConfig(this.host, config)
 
+    // if no config then show editing UI
     if (!options.dataViews[0].metadata.objects) {
-      return (this.root.innerHTML = `<div>
-        <p>No config loaded</p>
-      </div>`)
+      return renderConfig(this.root, "", {
+        updateConfig,
+        options,
+      })
     }
 
-    const { config } = options.dataViews[0].metadata.objects
-    const renderOptions = {
-      setConfig: config => setConfig(this.host, config),
-      options,
+    const {
+      config: { configJson, editing },
+    } = options.dataViews[0].metadata.objects
+
+    if (editing) {
+      return renderConfig(this.root, configJson, {
+        updateConfig,
+        options,
+      })
     }
-    render(this.root, config, renderOptions)
+
+    renderChart(this.root, configJson, {
+      startEditing: () => startEditing(this.host),
+      options,
+    })
   }
 
   /**
@@ -49,14 +61,23 @@ export class Visual implements IVisual {
 }
 
 function setConfig(host, config) {
+  persist(host, {
+    configJson: config,
+    editing: false,
+  })
+}
+
+function startEditing(host) {
+  persist(host, { editing: true })
+}
+
+function persist(host, properties) {
   host.persistProperties({
     merge: [
       {
         objectName: "config",
         selector: undefined,
-        properties: {
-          configJson: config,
-        },
+        properties,
       },
     ],
   })

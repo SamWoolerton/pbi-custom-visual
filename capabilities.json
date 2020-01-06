@@ -65,6 +65,12 @@
           "type": {
             "text": true
           }
+        },
+        "editing": {
+          "displayName": "Edit chart",
+          "type": {
+            "bool": true
+          }
         }
       }
     }
