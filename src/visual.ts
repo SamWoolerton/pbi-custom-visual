@@ -10,6 +10,7 @@ import "core-js/stable"
 import "./../style/visual.less"
 import powerbi from "powerbi-visuals-api"
 import { VisualSettings } from "./settings"
+import { render } from "./render"
 
 export class Visual implements IVisual {
   private root: HTMLElement
@@ -23,10 +24,7 @@ export class Visual implements IVisual {
 
   public update(options: VisualUpdateOptions) {
     this.settings = VisualSettings.parse(options.dataViews[0])
-    console.log("Settings are", this.settings)
-    console.log("Options are", options.dataViews[0])
-
-    persistConfig(this.host, "basic testing")
+    setConfig(this.host, "basic testing")
 
     if (!options.dataViews[0].metadata.objects) {
       return (this.root.innerHTML = `<div>
@@ -35,29 +33,18 @@ export class Visual implements IVisual {
     }
 
     const { config } = options.dataViews[0].metadata.objects
-
-    console.log("Visual update", options)
-    console.log("Host is", this.host)
-
-    console.log(
-      "After persisting properties",
-      this.host,
-      options.dataViews[0].metadata.objects
-    )
-
-    this.root.innerHTML = `<div>
-        <p>Config is</p>
-        <p>${config.configJson}</p>
-    </div>`
+    const renderOptions = {
+      setConfig: config => setConfig(this.host, config),
+      options,
+    }
+    render(this.root, config, renderOptions)
   }
 
   /**
    * This function gets called for each of the objects defined in the capabilities files and allows you to select which of the
    * objects and properties you want to expose to the users in the property pane.
    */
-  public enumerateObjectInstances(
-    options: EnumerateVisualObjectInstancesOptions
-  ): VisualObjectInstance[] | VisualObjectInstanceEnumerationObject {
+  public enumerateObjectInstances(options) {
     return VisualSettings.enumerateObjectInstances(
       this.settings || VisualSettings.getDefault(),
       options
@@ -65,7 +52,7 @@ export class Visual implements IVisual {
   }
 }
 
-function persistConfig(host, config) {
+function setConfig(host, config) {
   host.persistProperties({
     merge: [
       {
