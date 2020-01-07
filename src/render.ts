@@ -1,7 +1,7 @@
 import * as vega from "vega"
 import { compile } from "vega-lite"
 
-import { getEl, on, parseOrEmpty } from "./utility/index"
+import { getEl, on, parseOrEmpty, zip } from "./utility/index"
 import { baseSpecUI } from "./utility/vega"
 
 export function renderChart(root, configJson, { startEditing, options }) {
@@ -10,32 +10,26 @@ export function renderChart(root, configJson, { startEditing, options }) {
       <!--<button id="startEditing">Edit chart</button>-->
   </div>`
 
-  console.log("Options are", options)
+  let { categories, values } = options.dataViews[0].categorical
+  ;[categories, values] = [categories, values].map(arr => arr[0].values)
 
-  const parsedConfig = parseOrEmpty(configJson)
+  const data = {
+    values: zip(categories, values).map(([category, value]) => ({
+      category,
+      value,
+    })),
+  }
 
   const spec: any = {
     ...baseSpecUI(options.viewport),
-    data: {
-      values: [
-        { a: "A", b: 28 },
-        { a: "B", b: 55 },
-        { a: "C", b: 43 },
-        { a: "D", b: 91 },
-        { a: "E", b: 81 },
-        { a: "F", b: 53 },
-        { a: "G", b: 19 },
-        { a: "H", b: 87 },
-        { a: "I", b: 52 },
-      ],
-    },
+    data,
     mark: "bar",
     encoding: {
-      x: { field: "a", type: "ordinal" },
-      y: { field: "b", type: "quantitative" },
-      tooltip: { field: "b", type: "quantitative" },
+      x: { field: "category", type: "ordinal" },
+      y: { field: "value", type: "quantitative" },
+      tooltip: { field: "value", type: "quantitative" },
     },
-    ...parsedConfig,
+    ...parseOrEmpty(configJson),
   }
 
   const vgSpec = compile(spec).spec

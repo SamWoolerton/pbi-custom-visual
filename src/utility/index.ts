@@ -10,3 +10,7 @@ export function parseOrEmpty(str) {
 
   return {}
 }
+
+export function zip(a, b) {
+  return a.map((a, i) => [a, b[i]])
+}
