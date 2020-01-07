@@ -1,7 +1,7 @@
 import * as vega from "vega"
 import { compile } from "vega-lite"
 
-import { getEl, parseOrEmpty, zip } from "../utility/index"
+import { getEl, parseOrEmpty, zipWithColumns } from "../utility/index"
 import { baseSpecUI } from "../utility/vega"
 
 export function renderChart(root, configJson, { startEditing, options }) {
@@ -17,13 +17,9 @@ export function renderChart(root, configJson, { startEditing, options }) {
 
   console.log("Data is", data)
 
-  let { categories, values } = categorical
-  ;[categories, values] = [categories, values].map(arr => arr[0].values)
-
-  const zipped = zip(categories, values).map(([category, value]) => ({
-    [columnNames[0]]: category,
-    [columnNames[1]]: value,
-  }))
+  const { categories, values } = categorical
+  const columns = [...categories, ...values].map(arr => arr.values)
+  const zipped = zipWithColumns(columns, columnNames)
 
   const spec: any = {
     ...baseSpecUI(options.viewport),
@@ -32,9 +28,10 @@ export function renderChart(root, configJson, { startEditing, options }) {
     },
     mark: "bar",
     encoding: {
-      x: { field: columnNames[0], type: "ordinal" },
-      y: { field: columnNames[1], type: "quantitative" },
+      x: { field: "test", type: "ordinal" },
+      y: { field: "second", type: "quantitative" },
       tooltip: { field: "value", type: "quantitative" },
+      color: { field: "test", type: "nominal" },
     },
     ...parseOrEmpty(configJson),
   }

@@ -11,6 +11,14 @@ export function parseOrEmpty(str) {
   return {}
 }
 
-export function zip(a, b) {
-  return a.map((a, i) => [a, b[i]])
+export function zipWithColumns(columns, columnNames) {
+  return columns[0].map((_val, valIndex) =>
+    columnNames.reduce(
+      (acc, name, colIndex) => ({
+        ...acc,
+        [name]: columns[colIndex][valIndex],
+      }),
+      {}
+    )
+  )
 }
