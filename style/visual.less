@@ -1,0 +1,30 @@
+@colour-primary: #43439f;
+@colour-primary-lightest: #eeeef7;
+@colour-grey-light: #f5f5f5;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+textarea {
+  width: 100%;
+  background: @colour-grey-light;
+  border: none;
+  font-family: inherit;
+}
+
+button {
+  padding: 0.75rem 1rem;
+  background: @colour-primary;
+  color: @colour-primary-lightest;
+  border: none;
+}
