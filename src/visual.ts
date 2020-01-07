@@ -8,7 +8,9 @@ import "core-js/stable"
 import "regenerator-runtime/runtime"
 import "./../style/visual.less"
 import { VisualSettings } from "./settings"
-import { renderChart, renderConfig } from "./render"
+
+import { renderChart } from "./render/chart"
+import { renderConfig } from "./render/config"
 
 export class Visual implements IVisual {
   private root: HTMLElement

@@ -1,8 +1,8 @@
 import * as vega from "vega"
 import { compile } from "vega-lite"
 
-import { getEl, on, parseOrEmpty, zip } from "./utility/index"
-import { baseSpecUI } from "./utility/vega"
+import { getEl, parseOrEmpty, zip } from "../utility/index"
+import { baseSpecUI } from "../utility/vega"
 
 export function renderChart(root, configJson, { startEditing, options }) {
   root.innerHTML = `<div>
@@ -51,15 +51,4 @@ export function renderChart(root, configJson, { startEditing, options }) {
   // add this back in later on, in a more unobstrusive manner
   // can still use config panel
   // on(getEl("startEditing"), "click", startEditing)
-}
-
-export function renderConfig(root, configJson, { updateConfig, options }) {
-  root.innerHTML = `<div>
-      <textarea id="newConfig" placeholder="Enter config here...">${configJson}</textarea>
-      <button id="updateConfig">Update chart config</button>
-  </div>`
-
-  on(getEl("updateConfig"), "click", () =>
-    updateConfig((getEl("newConfig") as HTMLTextAreaElement).value)
-  )
 }
