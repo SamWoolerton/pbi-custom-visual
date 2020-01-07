@@ -1,14 +1,55 @@
-const getEl = id => document.getElementById(id)
-const on = (el, event, handler) => el.addEventListener(event, handler)
+import * as vega from "vega"
+import { compile } from "vega-lite"
+
+import { getEl, on, parseOrEmpty } from "./utility/index"
+import { baseSpecUI } from "./utility/vega"
 
 export function renderChart(root, configJson, { startEditing, options }) {
   root.innerHTML = `<div>
-      <p>Chart will use</p>
-      <p>${configJson}</p>
-      <button id="startEditing">Edit chart</button>
+      <div id="chartContainer"></div>
+      <!--<button id="startEditing">Edit chart</button>-->
   </div>`
 
-  on(getEl("startEditing"), "click", startEditing)
+  console.log("Options are", options)
+
+  const parsedConfig = parseOrEmpty(configJson)
+
+  const spec: any = {
+    ...baseSpecUI(options.viewport),
+    data: {
+      values: [
+        { a: "A", b: 28 },
+        { a: "B", b: 55 },
+        { a: "C", b: 43 },
+        { a: "D", b: 91 },
+        { a: "E", b: 81 },
+        { a: "F", b: 53 },
+        { a: "G", b: 19 },
+        { a: "H", b: 87 },
+        { a: "I", b: 52 },
+      ],
+    },
+    mark: "bar",
+    encoding: {
+      x: { field: "a", type: "ordinal" },
+      y: { field: "b", type: "quantitative" },
+      tooltip: { field: "b", type: "quantitative" },
+    },
+    ...parsedConfig,
+  }
+
+  const vgSpec = compile(spec).spec
+  const runtime = vega.parse(vgSpec)
+  new vega.View(runtime)
+    .logLevel(vega.Warn)
+    .initialize(getEl("chartContainer"))
+    .renderer("svg")
+    //  .renderer(this.settings.rendering.svg ? "svg" : "canvas")
+    .run()
+
+  // add this back in later on, in a more unobstrusive manner
+  // can still use config panel
+  // on(getEl("startEditing"), "click", startEditing)
 }
 
 export function renderConfig(root, configJson, { updateConfig, options }) {

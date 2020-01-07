@@ -5,6 +5,7 @@ import VisualUpdateOptions = powerbi.extensibility.visual.VisualUpdateOptions
 import IVisual = powerbi.extensibility.visual.IVisual
 
 import "core-js/stable"
+import "regenerator-runtime/runtime"
 import "./../style/visual.less"
 import { VisualSettings } from "./settings"
 import { renderChart, renderConfig } from "./render"
