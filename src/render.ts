@@ -10,23 +10,30 @@ export function renderChart(root, configJson, { startEditing, options }) {
       <!--<button id="startEditing">Edit chart</button>-->
   </div>`
 
-  let { categories, values } = options.dataViews[0].categorical
+  const data = options.dataViews[0]
+  const { categorical, metadata } = data
+
+  const columnNames = metadata.columns.map(c => c.displayName)
+
+  console.log("Data is", data)
+
+  let { categories, values } = categorical
   ;[categories, values] = [categories, values].map(arr => arr[0].values)
 
-  const data = {
-    values: zip(categories, values).map(([category, value]) => ({
-      category,
-      value,
-    })),
-  }
+  const zipped = zip(categories, values).map(([category, value]) => ({
+    [columnNames[0]]: category,
+    [columnNames[1]]: value,
+  }))
 
   const spec: any = {
     ...baseSpecUI(options.viewport),
-    data,
+    data: {
+      values: zipped,
+    },
     mark: "bar",
     encoding: {
-      x: { field: "category", type: "ordinal" },
-      y: { field: "value", type: "quantitative" },
+      x: { field: columnNames[0], type: "ordinal" },
+      y: { field: columnNames[1], type: "quantitative" },
       tooltip: { field: "value", type: "quantitative" },
     },
     ...parseOrEmpty(configJson),
