@@ -26,13 +26,6 @@ export function renderChart(root, configJson, { startEditing, options }) {
     data: {
       values: zipped,
     },
-    mark: "bar",
-    encoding: {
-      x: { field: "test", type: "ordinal" },
-      y: { field: "second", type: "quantitative" },
-      tooltip: { field: "value", type: "quantitative" },
-      color: { field: "test", type: "nominal" },
-    },
     ...parseOrEmpty(configJson),
   }
 
